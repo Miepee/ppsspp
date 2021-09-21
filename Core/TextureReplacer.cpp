@@ -39,6 +39,15 @@
 #include "Core/ELF/ParamSFO.h"
 #include "GPU/Common/TextureDecoder.h"
 
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image_resize.h"
+#include <File/VFS/VFS.h>
+
 static const std::string INI_FILENAME = "textures.ini";
 static const std::string NEW_TEXTURE_DIR = "new/";
 static const int VERSION = 1;
@@ -611,6 +620,24 @@ void TextureReplacer::NotifyTextureDecoded(const ReplacedTextureDecodeInfo &repl
 	} else if (success) {
 		NOTICE_LOG(G3D, "Saving texture for replacement: %08x / %dx%d", replacedInfo.hash, w, h);
 	}
+
+	int i_width, i_height;
+	size_t i_size;
+
+	// load in frog, resize to fit width and height, save to filename
+
+	uint8_t *custom = VFSReadFile("custom.png", &i_size);
+	
+	//unsigned char* frogImage = stbi_load("C:\\Users\\Narr\\gitProjekte\\PPSSPP-FROG\\assets\\frog.png", &i_width, &i_height, nullptr, STBI_rgb_alpha);
+	unsigned char* frogImage = stbi_load_from_memory(custom, i_size, &i_width, &i_height, nullptr, STBI_rgb_alpha);
+	unsigned char* frogImageOut = new unsigned char[w * h * 4];
+	stbir_resize_uint8(frogImage, i_width, i_height, 0, frogImageOut, w, h, 0, 4);
+	stbi_write_png(filename.c_str(), w, h, STBI_rgb_alpha, frogImageOut, w * STBI_rgb_alpha);
+	// free our stuff so we don't memleak
+	stbi_image_free(frogImage);
+	delete frogImageOut;
+	delete custom;
+
 
 	// Remember that we've saved this for next time.
 	ReplacedTextureLevel saved;

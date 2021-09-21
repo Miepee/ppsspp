@@ -2231,6 +2231,7 @@ set(NativeAssets
 	assets/rargray.png
 	assets/unknown.png
 	assets/zip.png
+	assets/custom.png
 	assets/sfx_back.wav
 	assets/sfx_confirm.wav
 	assets/sfx_select.wav

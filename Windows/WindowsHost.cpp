@@ -156,9 +156,9 @@ void WindowsHost::ShutdownGraphics() {
 
 void WindowsHost::SetWindowTitle(const char *message) {
 #ifdef GOLD
-	const char *name = "PPSSPP Gold ";
+	const char *name = "PPSSPP Gold 🐸 ";
 #else
-	const char *name = "PPSSPP ";
+	const char *name = "PPSSPP 🐸 ";
 #endif
 	std::wstring winTitle = ConvertUTF8ToWString(std::string(name) + PPSSPP_GIT_VERSION);
 	if (message != nullptr) {
